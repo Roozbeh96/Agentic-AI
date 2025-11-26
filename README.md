@@ -37,3 +37,33 @@ In case if you want to make environment from scratch, run:(Do not recommended)
 ```bash
 poetry new project_name
 ```
+
+## 2. Download Ollama installer
+
+Ollama is like a car that you can use different engines(models) for your job[Ollama](https://ollama.com/download).<br>
+
+Then in the terminal, paste the following line to install the model on the Ollama.<br>
+
+```bash
+ollama run llama3.1
+```
+
+To exit from the Ollama, use `/bye` in macOs and `Ctrl+d` in window.<br>
+
+## 3. Connecting Langchain to llama
+
+First, you  need to install `langchain` on the the virtual environment. In the terminal whre the `pyproject.toml` is locating, paste the following commands:
+```bash
+poetry add langchain
+poetry add langchain_community
+poetry add langchain-ollama
+poetry add pandas
+poetry add openpyxl
+poetry add ipykernel
+```
+
+To install langchain, you should have python >=3.10. If you get error regarding the range of the python, change this line `requires-python = ">=Your-python-version"` in `pyproject.toml` to `requires-python = ">=Your-python-version"`(removing ">=").<br>
+
+After installing the langchain, there is `sample.py` file in the `test` directory, that tested the connection of langchain with llama model installed locally by asking simple question in the prompt. The parameter `temperature` control randomness. Since we want to be precise, it should be zero. Ollama is running on the localhost `127.0.0.1 or localhost` with port number `11434`, so if you paste `curl 127.0.0.1:11434` in terminal, you will see Ollama is running.
+
+
