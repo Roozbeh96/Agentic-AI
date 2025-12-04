@@ -1,4 +1,4 @@
-# Agentic-AI-Lang-chain-
+# Agentic-AI-Lang-chain
 
 ## 1. 🛠️ Installing Poetry
 
@@ -77,3 +77,11 @@ After installing the langchain, there is `sample.py` file in the `test` director
 ## 5. Transforming Excel to SQL DB
 
 Since Langchain is 
+
+## 6. LangGraph
+
+To orchestrate the flow, I used LangGraph to define nodes.
+Inside each node, depending on what the task requires, I use either an LLM (via LangChain) or an MCP tool — and an MCP tool can internally call APIs, databases, or even run a RAG pipeline.
+
+<img src="Fig/AIStack3.jpeg" alt="AIStack" width="100%"/><br>
+<img src="Fig/AIStack4.jpeg" alt="AIStack" width="100%"/><br>
