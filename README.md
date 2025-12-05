@@ -1,4 +1,4 @@
-# Agentic-AI-Lang-chain
+# Make Agentic AI use LangGraph
 
 ## 1. 🛠️ Installing Poetry
 
