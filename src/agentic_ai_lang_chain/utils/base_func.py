@@ -3,6 +3,7 @@ from sqlalchemy import create_engine
 import os
 from typing import Literal, TypedDict, Optional
 from langgraph.graph import StateGraph, END
+from langchain_ollama import ChatOllama
 
 
 def read_transform(*, file_path:str) -> pd.DataFrame:
@@ -19,12 +20,23 @@ def read_transform(*, file_path:str) -> pd.DataFrame:
         
         print('Transformation complete.')
         return engine
-    
+
+router_llm = ChatOllama(
+    model="llama3.1",
+    temperature=0.0,  # deterministic for classification
+)
+
+FIXED_REJECTION_MESSAGE = (
+    "I can not answer to this question right now. "
+    "Maybe in future updates I will be able of answering your question."
+)
+
 class AgentState(TypedDict):
     question: str
     route: Optional[Literal["sql", "reject"]]
     answer: Optional[str]
-    
+
+
 
 def classify_question_node(state: AgentState) -> AgentState:
     """Decide if the question is SQL-related or general."""

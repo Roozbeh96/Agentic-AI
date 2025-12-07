@@ -1,4 +1,4 @@
-from src.agentic_ai_lang_chain.utils.base_func import read_transform, AgentState, build_graph
+from utils.base_func import read_transform, AgentState, build_graph
 import os
 import pandas as pd
 from langchain_ollama import ChatOllama
@@ -38,14 +38,26 @@ tables = db.get_usable_table_names()
 
 app = build_graph()
 
+question = input("Please ask your SQL-related question: ")
 
-router_llm = ChatOllama(
-    model="llama3.1",
-    temperature=0.0,  # deterministic for classification
-)
+state_in1: AgentState = {
+    "question": question,
+    "route": None,
+    "answer": None,
+}
+result = app.invoke(state_in1)
+print("GENERAL QUESTION RESULT:")
+print(result["answer"])
+print("-" * 50)
 
-FIXED_REJECTION_MESSAGE = (
-    "I can not answer to this question right now. "
-    "Maybe in future updates I will be able of answering your question."
-)
+question = input("Please ask your SQL-related question: ")
 
+# Example 2: SQL-related question
+state_in2: AgentState = {
+    "question": question,
+    "route": None,
+    "answer": None,
+}
+result2 = app.invoke(state_in2)
+print("SQL QUESTION RESULT:")
+print(result2["answer"])
