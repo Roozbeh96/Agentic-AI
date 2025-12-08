@@ -8,16 +8,16 @@ from langgraph.graph import StateGraph, END
 from typing import Literal, TypedDict, Optional
 
 
-path = os.getcwd()
-path = os.path.abspath(
-    os.path.join(path, 'data')
-)
+# path = os.getcwd()
+# path = os.path.abspath(
+#     os.path.join(path, 'data')
+# )
 
-engine = read_transform(file_path=path)
+# engine = read_transform(file_path=path)
 
 
-db = SQLDatabase(engine)
-tables = db.get_usable_table_names()
+# db = SQLDatabase(engine)
+# tables = db.get_usable_table_names()
 
 
 # llm = ChatOllama(

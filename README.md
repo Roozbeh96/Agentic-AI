@@ -85,7 +85,9 @@ First we start with defining the `app` object. The app is build by the function 
 - What types they have?<br>
 - How to merge updates from nodes?<br>
 _ How to check if your nodes are correct?<br>
-`AgentState` is a template or schema, not data. `TypeDict` describes the shape of a dict. LangGraph workflows expect a dict-like state not class. `x: Optional[int]` means `x` can be `int` or `None`. `x:Literal["sql","reject"]` means `x` can be `"sql"` or `"reject"`. No other string is allowed. State is the memory dictionary that flows between nodes of the graph. The state is the data that gets passed from node to node. Each node receives this state, modifies part of it, and returns the updated state. 
+`AgentState` is a template or schema, not data. `TypeDict` describes the shape of a dict. LangGraph workflows expect a dict-like state not class. `x: Optional[int]` means `x` can be `int` or `None`. `x:Literal["sql","reject"]` means `x` can be `"sql"` or `"reject"`. No other string is allowed. State is the memory dictionary that flows between nodes of the graph. The state is the data that gets passed from node to node. Each node receives this state, modifies part of it, and returns the updated state.<br>
+`graph.add_node` adds a node to the LangGraph workflow. A node in LangGraph is one step (one function) in your agent’s flow. Each node receive something from node, compute something, write back to the state. <br>
+`add_conditional_edges` defines branching logic (i.e., how the graph decides where to go next based on the state)
 
 ## 6. SQL node using Langchain
 
