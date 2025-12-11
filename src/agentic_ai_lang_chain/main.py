@@ -10,26 +10,14 @@ from typing import Literal, TypedDict, Optional
 
 app = build_graph()
 
-question = input("Please ask your SQL-related question: ")
-
-state_in1: AgentState = {
-    "question": question,
-    "route": None,
-    "answer": None,
-}
-result = app.invoke(state_in1)
-print("GENERAL QUESTION RESULT:")
-print(result["answer"])
-print("-" * 50)
-
-question = input("Please ask your SQL-related question: ")
-
-# Example 2: SQL-related question
-state_in2: AgentState = {
-    "question": question,
-    "route": None,
-    "answer": None,
-}
-result2 = app.invoke(state_in2)
-print("SQL QUESTION RESULT:")
-print(result2["answer"])
+while True:
+    state_in1: AgentState = {
+        "question": "",
+        "router1": None,
+        "db_name": "",
+        "answer_sql": None,
+        "answer_general": None
+    }
+    result = app.invoke(state_in1)
+    print(result["answer_sql"] or result["answer_general"])
+    print('*'*75)
