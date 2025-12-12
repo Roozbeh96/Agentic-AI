@@ -114,7 +114,7 @@ def find_db_name(state: str) -> str:
     decision = response.content.strip().lower()
 
     if decision == "none":
-        print("Database name not found, asking question again.")
+        print("\n****Database name not found, asking question again****\n")
         state["db_name"] = "ASK_AGAIN"
     else :
         state["db_name"] = decision
@@ -215,7 +215,6 @@ def build_graph():
 
     # Once SQL node finishes, we end the graph
     # After running the node "sql_node", the graph execution should end
-    graph.add_edge("find_db_name", "sql_node")
     graph.add_edge("sql_node", END)
     graph.add_edge("general_node", END)
 
