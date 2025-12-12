@@ -93,8 +93,8 @@ def find_db_name(state: str) -> str:
         '''
             You are a STRICT table-name classifier.
             Valid table names:
-            - online_retail_II
-            - RFM_score
+            - online_retail_ii
+            - rfm_score
 
             Rules:
             - Look at the user's question.
@@ -150,6 +150,7 @@ def sql_node(state: AgentState) -> AgentState:
             - Do NOT talk to the user.
             - Do NOT add natural language.
             - The output must be executable SQL only.
+            - Please add _table suffix to the table name in the query.
 
             If the request cannot be answered with SQL, output ONLY:
             SELECT 'ERROR';'''
@@ -160,8 +161,9 @@ def sql_node(state: AgentState) -> AgentState:
     ]
 
     response = llm.invoke(messages)
-
-    answer_sql = db_chain.run(response.content.strip())
+    answer_sql = db.run(response.content.strip())
+    # answer_sql = db_chain.run(response.content.strip())
+    # answer_sql = db_chain.invoke({"query": response.content.strip()})
     state["answer_sql"] = answer_sql
     return state
 
