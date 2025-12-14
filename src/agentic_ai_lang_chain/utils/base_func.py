@@ -6,6 +6,8 @@ from langgraph.graph import StateGraph, END
 from langchain_ollama import ChatOllama
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_community.utilities import SQLDatabase
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 
 def read_transform(*, file_path:str, db_name: str) -> pd.DataFrame:
     if f"{db_name}_database.db" in os.listdir(file_path):
@@ -41,7 +43,7 @@ class AgentState(TypedDict):
     answer_general: Optional[str]
 
 def start_node(state: AgentState) -> AgentState:
-    question = input("Please ask your question: if it is SQL related, please includ the database name.\n")
+    question = input("Please ask your question(General of SQL): if it is SQL related, please includ the database name.\n")
 
     state["question"] = question
     return state
@@ -169,7 +171,71 @@ def sql_node(state: AgentState) -> AgentState:
 
 
 def general_node(state: AgentState) -> AgentState:
-    state["answer_general"] = FIXED_REJECTION_MESSAGE
+    path_root = os.getcwd()
+    
+    CHROMA_DIR = os.path.abspath(
+        os.path.join(path_root, 'data_base', 'chroma_pdf_db')
+    )
+    EMBED_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+
+    # 1. Embeddings model (must match what you used for indexing)
+    embeddings = HuggingFaceEmbeddings(model_name=EMBED_MODEL)
+
+    # 2. Load existing Chroma vector DB from disk
+    vectorstore = Chroma(
+        embedding_function=embeddings,
+        persist_directory=CHROMA_DIR,
+    )
+
+    retriever = vectorstore.as_retriever(
+    search_kwargs={"k": 4}  # top-k chunks to retrieve
+    )
+    question = state["question"]
+
+    # 1. Retrieve relevant chunks from the vector DB
+    docs = retriever.invoke(question)
+
+    if not docs:
+        state["answer"] = (
+            "I couldn't find anything in the documents related to your question."
+        )
+        return state
+
+    context_parts = []
+    for d in docs:
+        src = d.metadata.get("source", "unknown_source")
+        page = d.metadata.get("page", "unknown_page")
+        snippet = d.page_content
+        context_parts.append(
+            f"Source: {src}, page: {page}\n{snippet}"
+        )
+
+    context_text = "\n\n---\n\n".join(context_parts)
+
+    # 3. Define a RAG-style system prompt
+    system_prompt = """
+        You are a helpful assistant that answers questions using ONLY the provided context.
+
+        Rules:
+        - Use the context to answer the question as accurately as possible.
+        - If the answer is not in the context, say you don't know.
+        - Do NOT invent facts that are not supported by the context.
+        - If relevant, you may mention which source/page you are drawing from.
+    """
+
+    # 4. Build messages for the LLM
+    messages = [
+        ("system", system_prompt),
+        (
+            "user",
+            f"Context:\n{context_text}\n\n"
+            f"Question:\n{question}"
+        ),
+    ]
+    response = llm.invoke(messages)
+    answer_text = response.content.strip()
+
+    state["answer_general"] = answer_text
     return state
 
 def build_graph():
