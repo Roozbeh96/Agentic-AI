@@ -6,16 +6,8 @@ from langgraph.graph import StateGraph, END
 from langchain_ollama import ChatOllama
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_community.utilities import SQLDatabase
-<<<<<<< HEAD
-from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
-
-
-
-
-=======
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
->>>>>>> 78ecc7c2d44b5065a8a4e7c5f4d48ee00b0fcdd8
 
 def read_transform(*, file_path:str, db_name: str) -> pd.DataFrame:
     if f"{db_name}_database.db" in os.listdir(file_path):
@@ -88,21 +80,6 @@ def classify_question_node(state: AgentState) -> AgentState:
     return state
 
 
-<<<<<<< HEAD
-    question = state["question"]
-    # db_chain = SQLDatabaseChain.from_llm(
-    #     llm=llm,
-    #     db=db,
-    #     verbose=True,  # so you can see SQL it generates
-    # )
-    # answer = db_chain.run(question)
-    # state["answer"] = answer
-
-    toolkit = SQLDatabaseToolkit(db=db, llm=llm)
-    agent = create_sql_agent(llm=llm, toolkit=toolkit, verbose=True)
-    result = agent.invoke({"input": question})
-    state["answer"] = result
-=======
 def router1_decision(state: AgentState) -> str:
     """
     Decide where to go next based on state['router1'].
@@ -190,7 +167,6 @@ def sql_node(state: AgentState) -> AgentState:
     # answer_sql = db_chain.run(response.content.strip())
     # answer_sql = db_chain.invoke({"query": response.content.strip()})
     state["answer_sql"] = answer_sql
->>>>>>> 78ecc7c2d44b5065a8a4e7c5f4d48ee00b0fcdd8
     return state
 
 
