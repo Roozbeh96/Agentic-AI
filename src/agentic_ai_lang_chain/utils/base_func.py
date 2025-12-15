@@ -6,6 +6,11 @@ from langgraph.graph import StateGraph, END
 from langchain_ollama import ChatOllama
 from langchain_experimental.sql import SQLDatabaseChain
 from langchain_community.utilities import SQLDatabase
+from langchain_community.agent_toolkits import create_sql_agent, SQLDatabaseToolkit
+
+
+
+
 
 def read_transform(*, file_path:str) -> pd.DataFrame:
     if 'online_retail_database.db' in os.listdir(file_path):
@@ -88,14 +93,18 @@ def sql_node(state: AgentState) -> AgentState:
     """
 
     question = state["question"]
-    db_chain = SQLDatabaseChain.from_llm(
-        llm=llm,
-        db=db,
-        verbose=True,  # so you can see SQL it generates
-    )
-    answer = db_chain.run(question)
-    state["answer"] = answer
-    
+    # db_chain = SQLDatabaseChain.from_llm(
+    #     llm=llm,
+    #     db=db,
+    #     verbose=True,  # so you can see SQL it generates
+    # )
+    # answer = db_chain.run(question)
+    # state["answer"] = answer
+
+    toolkit = SQLDatabaseToolkit(db=db, llm=llm)
+    agent = create_sql_agent(llm=llm, toolkit=toolkit, verbose=True)
+    result = agent.invoke({"input": question})
+    state["answer"] = result
     return state
 
 
