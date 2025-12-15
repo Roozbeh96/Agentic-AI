@@ -111,5 +111,5 @@ Before doing the general queries, we have to use the most updated data to do the
 
 
 <img src="Fig/AIStack3.jpeg" alt="AIStack" width="100%"/><br>
-<img src="Fig/AIStack4.jpeg" alt="AIStack" width="100%"/><br>
-<img src="Fig/AIStack5.jpeg" alt="AIStack" width="100%"/><br>
+<img src="Fig/AIStack4.png" alt="AIStack" width="100%"/><br>
+<img src="Fig/AIStack5.png" alt="AIStack" width="100%"/><br>
