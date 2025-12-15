@@ -79,7 +79,6 @@ def router1_decision(state: AgentState) -> str:
  
     if state.get("router1") == "sql":
         return "sql_query"
-    # default: reject → end of graph
     return "general_node"
 
 def find_db_name(state: str) -> str:
