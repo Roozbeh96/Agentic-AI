@@ -26,12 +26,7 @@ def read_transform(*, file_path:str, db_name: str) -> pd.DataFrame:
 
 llm = ChatOllama(
     model="llama3.1",
-    temperature=0.0,  # deterministic for classification
-)
-
-FIXED_REJECTION_MESSAGE = (
-    "I can not answer_sql to this question right now. "
-    "Maybe in future updates I will be able of answer_sqling your question."
+    temperature=0.5,  # deterministic for classification
 )
 
 
@@ -81,10 +76,7 @@ def classify_question_node(state: AgentState) -> AgentState:
 
 
 def router1_decision(state: AgentState) -> str:
-    """
-    Decide where to go next based on state['router1'].
-    Must return the name of the next node or END.
-    """
+ 
     if state.get("router1") == "sql":
         return "sql_query"
     # default: reject → end of graph
@@ -265,7 +257,7 @@ def build_graph():
         router1_decision,
         # mapping from string returned by router1_decision to next node
         # if router1_decision returns "sql", go to "sql_node"
-        # if router1_decision returns END, go to END
+        # if router1_decision returns "general", go to "general_node"
         {
             "sql_query": "find_db_name",
             "general_node": "general_node",
